@@ -1,5 +1,4 @@
 using loggingProvider.Dados;
-using loggingProvider.Entidades;
 using loggingProvider.ExtensionLogger;
 using loggingProvider.Interface;
 using Microsoft.AspNetCore.Builder;
@@ -31,9 +30,9 @@ namespace loggingProvider
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider services)
-        { 
+        {
             loggerFactory.AddContext(LogLevel.Information, services);
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

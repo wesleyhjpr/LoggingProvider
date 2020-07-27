@@ -1,7 +1,7 @@
-CREATE TABLE [LogEvento] (
+create TABLE [Log] (
     [Id] [uniqueidentifier] NOT NULL PRIMARY KEY,
-    [Category] VARCHAR(512) NOT NULL,
-    [EventId] INT NULL,
+    [Categoria] VARCHAR(512) NOT NULL,
+    [IdEvento] INT NULL,
     [LogLevel] VARCHAR(32) NOT NULL,
-    [Message] VARCHAR(max) NOT NULL,
-    [CreatedTime] DATETIME NOT NULL)
+    [Mensagem] VARCHAR(max) NOT NULL,
+    [DataCadastro] DATETIME NOT NULL)

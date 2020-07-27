@@ -1,6 +1,5 @@
 ﻿using loggingProvider.Entidades;
 using loggingProvider.Interface;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
@@ -12,8 +11,8 @@ namespace loggingProvider.ExtensionLogger
         private static dynamic IdRepositorio;
         public static ILoggerFactory AddContext(this ILoggerFactory factory, IServiceProvider services, Func<string, LogLevel, bool> filter = null)
         {
-            Type serviceType = typeof(IRepositorioBase<LogEvento>);
-            factory.AddProvider(new AppLoggerProvider(filter, repositorio: (IRepositorioBase<LogEvento>)services.GetService(serviceType)));
+            Type serviceType = typeof(IRepositorioBase<Log>);
+            factory.AddProvider(new AppLoggerProvider(filter, repositorio: (IRepositorioBase<Log>)services.GetService(serviceType)));
             return factory;
         }
 
@@ -27,9 +26,9 @@ namespace loggingProvider.ExtensionLogger
     public class AppLoggerProvider : ILoggerProvider
     {
         private readonly Func<string, LogLevel, bool> _filtro;
-        private readonly IRepositorioBase<LogEvento> _repositorio;
+        private readonly IRepositorioBase<Log> _repositorio;
 
-        public AppLoggerProvider(Func<string, LogLevel, bool> filtro, IRepositorioBase<LogEvento> repositorio)
+        public AppLoggerProvider(Func<string, LogLevel, bool> filtro, IRepositorioBase<Log> repositorio)
         {
             _filtro = filtro;
             _repositorio = repositorio;
@@ -45,12 +44,12 @@ namespace loggingProvider.ExtensionLogger
     {
         private readonly string _nomeCategoria;
         private readonly Func<string, LogLevel, bool> _filtro;
-        private readonly IRepositorioBase<LogEvento> _repositorio;
+        private readonly IRepositorioBase<Log> _repositorio;
         private IExternalScopeProvider ScopeProvider { get; set; }
 
         public AppLogger(string nomeCategoria,
                          Func<string, LogLevel, bool> filtro,
-                         IRepositorioBase<LogEvento> repositorio)
+                         IRepositorioBase<Log> repositorio)
         {
             _nomeCategoria = nomeCategoria;
             _filtro = filtro;
@@ -82,16 +81,16 @@ namespace loggingProvider.ExtensionLogger
             if (exception != null)
                 mensagem = logBuilder.Append(exception.ToString()).ToString();
 
-            var eventLog = new LogEvento()
+            var log = new Log()
             {
-                Message = mensagem,
-                EventId = eventoId.Id,
-                Category = _nomeCategoria,
+                Mensagem = mensagem,
+                IdEvento = eventoId.Id,
+                Categoria = _nomeCategoria,
                 LogLevel = logLevel.ToString(),
-                CreatedTime = DateTime.UtcNow
+                DataCadastro = DateTime.UtcNow
             };
-            AppLoggerExtencao.SetarId(eventLog.Id);
-            _repositorio.Adicionar(eventLog);
+            AppLoggerExtencao.SetarId(log.Id);
+            _repositorio.Adicionar(log);
         }
 
         public bool IsEnabled(LogLevel logLevel) => _filtro == null || _filtro(_nomeCategoria, logLevel);
